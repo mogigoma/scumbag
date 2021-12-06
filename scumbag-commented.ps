@@ -1,0 +1,673 @@
+%!PS-Adobe-3.0
+%%Title: Scumbag
+%%Orientation: Portrait
+%%BoundingBox: 0 0 612 792
+%%Pages: 10
+%%EndComments
+%%BeginProlog
+
+% -----------------------------
+% BSides Winnipeg 2013 Presents
+%          "Scumbag"
+%     A troll in two parts
+% -----------------------------
+
+/sequence { { } for } def
+
+/swap {     % a i j
+  3 -1 roll % i j a
+  dup       % i j a a
+  dup       % i j a a a
+  dup       % i j a a a a
+  6 4 roll  % a a a a i j
+  dup       % a a a a i j j
+  7 2 roll  % j j a a a a i
+  dup       % j j a a a a i i
+  3 1 roll  % j j a a a i a i
+  get       % j j a a a i a.i
+  6 -2 roll % j a a i a.i j a
+  exch      % j a a i a.i a j
+  get       % j a a i a.i a.j
+  exch      % j a a i a.j a.i
+  6 1 roll  % a.i j a a i a.j
+  put       % a.i j a
+  3 1 roll  % a a.i j
+  exch      % a j a.i
+  put       % <empty>
+} def
+
+/append {     % a c
+  1 index     % a c a
+  length      % a c l
+  dup         % a c l l
+  1 add       % a c l L
+  string      % a c l A
+  dup         % a c l A A
+  4 -2 roll   % a A A c l
+  exch        % a A A l c
+  put         % a A
+  dup         % a A A
+  0           % a A A 0
+  4 -1 roll   % A A 0 a
+  putinterval % A
+} def
+
+/concat {     % a b
+  exch        % b a
+  0 1         % b a 0 1
+  3 index     % b a 0 1 b
+  length      % b a 0 1 l
+  1 sub       % b a 0 1 l-1
+  {           % b a i
+    2 index   % b a i b
+  exch      % b a b i
+  get       % b a c
+  append    % b A
+  } for
+  exch        % A b
+  pop         % A
+} def
+
+/lowercase { % s
+  dup length % s l
+  0 exch     % s 0 l
+  1 exch     % s 0 1 l
+  1 sub      % s 0 1 l-1
+  {          % s i
+  1 index  % s i s
+  1 index  % s i s i
+  get      % s i c
+  dup      % s i c c
+  dup      % s i c c c
+  65 ge    % s i c c f1
+  exch     % s i c f1 c
+  90 le    % s i c f1 f2
+  and      % s i c f
+  {
+    32 add % s i c
+  } if
+  2 index  % s i c s
+  2 index  % s i c s i
+  3 2 roll % s i s i c
+  put      % s i
+  pop      % s
+  } for
+} def
+
+/strip { 		  % s
+    ()   		  % s z
+    1 index		% s z s
+    length		% s z l
+    1 sub		  % s z l-1
+    0 exch		% s z 0 l-1
+    1 exch		% s z 0 1 l-1
+    {			    % s z i
+	    2 index		  % s z i s
+	    exch		 % s z s i
+	    get		% s z c
+	    dup		% s z c c
+	    10 ne		% s z c f
+	    { append }	% s Z
+	    { pop }		% s Z
+	    ifelse		% s Z
+    } for
+    exch		% Z s
+    pop			% Z
+} def
+
+/b32decode {    % S
+  strip         % s
+  lowercase     % s
+  ()            % s z
+  exch          % z s
+  dup           % z s s
+  length        % z s l
+  0 exch
+  8 exch
+  1 sub
+  {             % z s i
+    0 exch      % z s b i
+  0 exch      % z s b q i
+    dup         % z s b q i i
+  dup         % z s b q i i i
+    7 add       % z s b q i i i+7
+  1 exch      % z s b q i i 1 i+7
+    {           % z s b q i j
+    4 index   % z s b q i j s
+    exch      % z s b q i s j
+    get       % z s b q i c
+    dup       % z s b q i c c
+    61 eq     % z s b q i c f
+    {
+      exit
+    } if        % z s b q i c
+    dup         % z s b q i c c
+    97 ge       % z s b q i c f1
+    1 index     % z s b q i c f1 c
+    122 le      % z s b q i c f1 f2
+    and         % z s b q i c f3
+      { 97 sub }
+    { 24 sub }
+    ifelse      % z s b q i n
+      3 -1 roll   % z s b i n q
+    5 bitshift  % z s b i n q
+    or          % z s b i q
+    exch        % z s b q i
+    3 2 roll    % z s q i b
+    5 add       % z s q i b
+    dup         % z s q i b b
+    8 ge        % z s q i b f
+    {
+      8 sub     % z s q i b
+    dup       % z s q i b b
+    3 index   % z s q i b b q
+    exch      % z s q i b q b
+    -1 mul    % z s q i b q -b
+    bitshift  % z s q i b c
+    6 -1 roll % s q i b c z
+    exch      % s q i b z c
+    append    % s q i b Z
+    5 1 roll  % Z s q i b
+        dup       % Z s q i b b
+    1 exch    % Z s q i b 1 b
+    bitshift  % Z s q i b B
+    1 sub     % Z s q i b B
+    4 -1 roll % Z s i b B q
+    and       % Z s i b Q
+    3 1 roll  % Z s Q i b
+    } if
+    3 1 roll    % Z s b Q i
+  } for         % z s b q i
+  pop           % z s b q
+  pop           % z s b
+  pop           % z s
+  } for
+  pop             % z
+  pop
+} def
+
+/n2h {         % c
+  2 string     % c s
+  exch         % s c
+  dup          % s c c
+  -4 bitshift  % s c n
+  15 and       % s c N
+  dup          % s c N N
+  9 le         % s c N f
+  { 48 add }
+  { 55 add }
+  ifelse       % s c h
+  2 index      % s c h s
+  0            % s c h s 0
+  3 -1 roll    % s c s 0 h
+  put          % s c
+  dup          % s c c
+  15 and       % s c N
+  dup          % s c N N
+  9 le         % s c N f
+  { 48 add }
+  { 55 add }
+  ifelse       % s c h
+  2 index      % s c h s
+  1            % s c h s 1
+  3 -1 roll    % s c s 1 h
+  put          % s c
+  pop          % s
+} def
+
+/s2h {          % s
+  dup           % s s
+  length        % s l
+  2 mul         % s L
+  string        % s z
+  exch          % z s
+  0 1           % z s 0 1
+  2 index       % z s 0 1 s
+  length        % z s 0 1 l
+  1 sub         % z s 0 1 l-1
+  {             % z s i
+    1 index     % z s i s
+    1 index     % z s i s i
+  get         % z s i c
+  tohex       % z s i h
+  exch        % z s h i
+  2 mul       % z s h I
+  exch        % z s I h
+  3 index     % z s I h z
+  3 1 roll    % z s z I h
+  putinterval % z s
+  } for
+  pop           % z
+} def
+
+/rc4ksa {     % k
+  b32decode   % K
+  dup         % K K
+  length      % K l
+  0           % K l j
+  
+  1 dict begin
+  /S [ 0 1 255 sequence ] def
+
+  0 1 255 {   % K l j i
+  dup       % K l j i i
+  dup       % K l j i i i
+  6 1 roll  % i K l j i i
+  S         % i K l j i i S
+  exch      % i K l j i S i
+  get       % i K l j i S.i
+  exch      % i K l j S.i i
+  4 -1 roll % i K j S.i i l
+  dup       % i K j S.i i l l
+  5 1 roll  % i K l j S.i i l
+  mod       % i K l j S.i i%l
+  5 -1 roll % i l j S.i i%l K
+  dup       % i l j S.i i%l K K 
+  6 1 roll  % i K l j S.i i%l K
+  exch      % i K l j S.i K i%l
+  get       % i K l j S.i c
+  add       % i K l j sum
+  add       % i K l sum
+  256 mod   % i K l J
+  dup       % i K l J J
+  5 1 roll  % j i K l J
+  S         % j i K l J S
+  6 -2 roll % K l J S J i
+  swap      % K l J
+  } for
+  pop         % K l
+  pop         % K
+  pop         % <empty>
+  S           % S
+  end
+} def
+
+/rc4 {         % k c
+  exch         % c k
+  rc4ksa       % c S
+  1 dict begin % c S
+  /S exch def  % c
+  b32decode    % C
+  0 0          % C j i
+  0 1          % C j i 0 1
+  4 index      % C j i 0 1 C
+  length       % C j i 0 1 l
+  1 sub        % C j i 0 1 l-1
+  {            % C j i n
+    4 1 roll   % n C j i
+    1 add      % n C j I
+    256 mod    % n C j I
+    dup        % n C j I I
+    3 1 roll   % n C I j I
+    S          % n C I j I S
+    exch       % n C I j S I
+    get        % n C I j S.I
+    add        % n C I J
+    256 mod    % n C I J
+    S          % n C I J S
+    2 index    % n C I J S I
+    2 index    % n C I J S I J
+    swap       % n C I J
+    S          % n C I J S
+    2 index    % n C I J S I
+    get        % n C I J S.I
+    S          % n C I J S.I S
+    2 index    % n C I J S.I S J
+    get        % n C I J S.I S.J
+    add        % n C I J sum
+    256 mod    % n C I J rem
+    S          % n C I J rem S
+    exch       % n C I J S rem
+    get        % n C I J x
+    3 index    % n C I J x C
+    5 index    % n C I J x C n
+    get        % n C I J x C.n
+    xor        % n C I J p
+    3 index    % n C I J p C
+    6 -1 roll  % C I J p C n
+    3 -1 roll  % C I J C n p
+    put        % C I J
+    exch       % C J I
+  } for
+  end
+  pop          % C J
+  pop          % C
+} def
+
+/cell {         % x y
+  8 8           % x y w h
+  rectstroke    % <empty>
+} def
+
+/state {      % x y
+  exch        % y x
+  dup         % y x x
+  2 index     % y x x y
+  cell        % y x
+  3
+  {
+    10 add    % y X
+    dup       % y X X
+    2 index   % y X X y
+    cell      % y X
+  } repeat
+  pop         % y
+  pop         % <empty>
+} def
+
+/s2boxes   {  % s x y
+  0 1         % s x y 0 1
+  4 index     % s x y 0 1 s
+  length      % s x y 0 1 l
+  1 sub       % s x y 0 1 l-1
+  {           % s x y i
+    2 index   % s x y i x
+    2 index   % s x y i x y
+    cell      % s x y i
+    3 index   % s x y i s
+    exch      % s x y s i
+    get       % s x y c
+    1 string  % s x y c z
+    dup       % s x y c z z
+    0         % s x y c z z 0
+    4 3 roll  % s x y z z 0 c
+    put       % s x y z
+    2 index   % s x y z x
+    1 add     % s x y z X
+    2 index   % s x y z X y
+    1.5 add   % s x y z X Y
+    newpath   % s x y z X Y
+    moveto    % s x y z
+    show      % s x y
+    exch      % s y x
+    10 add    % s y X
+    exch      % s X y
+  } for
+  pop         % s X
+  pop         % s
+  pop         % <empty>
+} def
+
+/shuffle {   % s
+  dup        % s s
+  length     % s l
+  dup        % s l l
+  2 mul      % s l L
+  {          % s l
+    rand     % s l i 
+    1 index  % s l i l
+    mod      % s l I
+    rand     % s l I j 
+    2 index  % s l I j l
+    mod      % s l I J
+    4 index  % s l I J s
+    3 1 roll % s l s I J
+    swap     % s l
+  } repeat
+  pop        % s
+  pop        % <empty>
+} def
+
+/sbox {         % x y
+  33 string     % x y a
+  dup           % x y a a
+  length        % x y a l
+  2 sub         % x y a L
+  0 1           % x y a L 0 1
+  3 2 roll      % x y a 0 1 L
+  {             % x y a i
+    dup         % x y a i i
+    25 le       % x y a i f
+    { 65 }
+    { 24 }
+    ifelse      % x y a i o
+    1 index     % x y a i o i
+    add         % x y a i c
+    2 index     % x y a i c a
+    3 1 roll    % x y a a i c
+    put         % x y a a i c
+  } for         % x y a
+  dup           % x y a a
+  dup           % x y a a a
+  32 45 put     % x y a a
+  3 index       % x y a a x
+  3 index       % x y a a x y
+  s2boxes       % x y a
+  dup           % x y a a
+  shuffle       % x y a
+  3 1 roll      % a x y
+  10 sub        % a x Y
+  s2boxes       % <empty>
+} def
+
+/perm {              % x y
+  [ 0 1 3 sequence ] % x y p
+  dup                % x y p
+  shuffle            % x y p
+  3 1 roll           % p x y
+  0 1 3 {            % p x y i
+    dup              % p x y i i
+    10 mul           % p x y i I
+    4 add            % p x y i I
+    exch             % p x y I i
+    4 index          % p x y I i p
+    exch             % p x y I p i
+    get              % p x y I o
+    10 mul           % p x y I O
+    4 add            % p x y I O
+    3 index          % p x y I O x
+    add              % p x y I O
+    exch             % p x y O I 
+    3 index          % p x y O I x
+    add              % p x y O X
+    2 index          % p x y O X y
+    2 copy           % p x y O X y X y
+    newpath          % p x y O X y X y
+    moveto           % p x y O X y
+    12 sub           % p x y O X Y
+    exch             % p x y I Y X
+    3 1 roll         % p x y X I Y
+    lineto           % p x y X
+    stroke           % p x y X
+    dup              % p x y X X
+    2 index          % p x y X X y
+    8 add            % p x y X X Y
+    newpath          % p x y X X Y
+    moveto           % p x y X
+    0 20 rlineto     % p x y X
+    stroke           % p x y X
+    1 index          % p x y X y
+    20 sub           % p x y X Y
+    newpath          % p x y X Y
+    moveto           % p x y
+    0 -20 rlineto    % p x y
+    stroke           % p x y
+  } for              % p x y
+  2 copy             % p x y x y
+  state              % p x y
+  20 sub             % p x Y
+  state              % p
+  pop                % <empty>
+} def
+
+/perms {        % x y
+  2 copy        % x y x y
+  exch          % x y y x
+  4 add         % x y y X
+  exch          % x y X y
+  28 add        % x y X Y
+  newpath       % x y X Y
+  moveto        % x y
+  380 0 rlineto % x y
+  stroke
+  2 copy        % x y x y
+  exch          % x y y x
+  4 add         % x y y X
+  exch          % x y X y
+  40 sub        % x y X Y
+  newpath       % x y X Y
+  moveto        % x y
+  380 0 rlineto % x y
+  stroke  
+  exch      % y x
+  8 {       % y x
+    dup     % y x x 
+    2 index % y x x y
+    perm    % y x
+    50 add  % y X
+  } repeat  % y X
+  pop       % y 
+  pop       % <empty>
+} def
+
+/pw 612 def
+/ph 792 def
+
+/arrow {   % y
+  pw 2 div % y x
+  20 sub   % y X
+  newpath  % y X
+  exch     % X y
+  moveto   % <empty>
+  40 0 rlineto
+  -20 -20 rlineto
+  closepath
+  fill
+} def
+
+/feist { % y
+  dup    % y y
+  112    % y y x
+  exch   % y x y
+  perms  % y
+  dup    % y
+  47 sub % Y
+  dup    % Y Y
+  arrow  % Y
+  33 sub % Y
+  dup    % Y Y
+  142    % Y Y x
+  exch   % Y Y x
+  sbox   % Y
+  15 sub % Y
+  arrow  % <empty>
+} def
+
+/pnum {      % p
+  newpath    % p
+  pw 20 sub  % p x
+  5          % p x y
+  moveto     % p
+  n2h        % h
+  show       % <empty>
+  1 1        % x y
+  pw 2 sub   % x y w
+  ph 2 sub   % x y w h
+  rectstroke % <empty>
+} def
+
+/page {      % p
+  dup        % p p
+  41         % p p q
+  add        % p Q
+  srand      % p
+  pnum       % <empty>
+
+  750 -150 150 { feist } for
+} def
+%%EndProlog
+
+/Courier findfont 10 scalefont setfont
+
+%%Page: 1 1
+1 page
+(YIL4 B6M7 BDIM X6MI M77H BI6M 6AZM MUPI)
+103 0 1 38 { % s x i
+  newpath    % s x i
+  2 index    % s x i s
+  exch       % s x s i
+  get        % s x c
+  exch       % s c x
+  10 add     % s c X
+  dup        % s c X X
+  751 moveto % s c X
+  exch       % s X c
+  () exch    % s X z c
+  append     % s X Z      
+  show       % s X
+} for pop pop
+showpage
+
+%%Page: 2 2
+2 page
+showpage
+
+%%Page: 3 3
+3 page
+showpage
+
+%%Page: 4 4
+4 page
+showpage
+
+%%Page: 5 5
+5 page
+showpage
+
+%%Page: 6 6
+6 page
+showpage
+
+%%Page: 7 7
+7 page
+showpage
+
+%%Page: 8 8
+8 page
+showpage
+
+%%Page: 9 9
+9 page
+showpage
+
+%%Page: 10 10
+10 page
+300 0 translate
+12.5 15.5 scale
+25 31 8 [25 0 0 31 0 -31]
+{<
+0202023f3f408b8c8e7f8082323233060606060606060606060606060606060606060606050505040404040404030303020202020202020202010101000000000000000000000000ffffff
+ffffff97999bc5c6c8a5a5a8727476020202010101010101010101000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5bfc0c2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5bcbdbfa7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5cfd0d1a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dc82b3effffffffffffffffffffffffffffffffffffffffffcb2538b52b3ba4313e98374394404b9d4c56a14e59a14752af3d4bc43243dd2035ffffff
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dad5661ab4552ba3a49c23143c03042b53443a9384594424c974c56a2505bb1545ec4616ccc6873dc6c78e0727fdb7984d3727dbb636eae4956cc2e3f
+ffffffa2a3a5d0d1d2a7a7aa7a7b7de47582da7984cf6b76c1636fbd606ac2606bc66571cc6672d05c69c64a58c33f4ec94453d04e5dd65564de6673e67b87eb8591ee8894d5737fac4a56
+ffffffa2a3a5d0d1d2a7a7aa7a7b7de5707eee8f9aed8893e8808be37582dd6774d85d6bce4958c32f40b92031ba2233c53646cf4a59d95f6de0727fe78590ed929cef939de4838eae4c58
+ffffffa2a3a5d0d1d2a7a7aa7a7b7dea8a95f2a9b1f09ba4eb8994e47884dd6774d65664cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a4ace68b96b04e5a
+ffffffa2a3a5d0d1d2a7a7aa7a7b7deb929cf3adb5f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a8b0e78e98b2505c
+ffffffa2a3a5d0d1d2a7a7aa7a7b7deb949ef3adb5f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a9b1e78f99b3525e
+ffffffa3a5a7d0d1d2abacae7a7b7deb949ef3adb5f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a9b1e78f99b55460
+ffffffa3a5a7cfd0d1bfc0c17a7b7deb949ef3adb5f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a9b1e78f99b75662
+ffffffa2a3a5bcbdbfa7a7aa7a7b7deb949ef3adb5f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43646cf4b5ad95f6de17380e88691ef9ba5f2a6afe88e98b95864
+ffffffa2a3a5bcbdbfa7a7aa7a7b7deb909af3acb4f09da7eb8b96e47a86dd6876d65765cc4454c33242b82031ba2233c43545cf4958d85c6ae0707ce7838eed949ef19ca5e78a94bb5a66
+ffffffa2a3a5bcbdbfa7a7aa7a7b7de8828ef1a5aef09ca5eb8b96e57a86dd6875d65664cc4252c33141ba2637bf3242cb4a59d15563db6b77e17581e57a86eb8591ee8793e6828dbd5c68
+090a0a6f70725e5e5f535355535455e28791ef959fee919be87e8ae3717edd6876d85f6dd25765ce5865ca5562c55e6abf656fc16670bd646fc16773d0717dde7d89ea7c89e47582bf5e6a
+6466677e7f81b6b8b9bec0c17d7f809c7a80e18590e98590e97f8be47783db7581d2707bc3646fb5616ba35d65a24e58b04351c03b4bc63949c83a4bc64452c05562c86e79d77783c1606c
+a3a5a7bcbebfd7d8d9e1e2e3d9d9da77787ac65462c46a75c06a75bc6872b35f69b74c59bd3f4ec73041d3273affffffffffffffffffffffffffffffffffffffffffd53748c65967c85563
+a3a5a7cccdcfeaebebf8f8f8eceded77787affffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+646667b7b9bae9eaeaf7f7f7b8b9ba4b4c4dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+090a0a606163929395898a8c505152070707ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+>} false 3 colorimage
+showpage
+
+%%EOF
